@@ -24,20 +24,13 @@ class FILM:
         self.poster = data['posterUrl']
         self.poster_preview = data['posterUrlPreview']
 
-        try:
-            self.secret_url = 'https:/' + data['secret']['data'][0]['iframe_src']
-        except (TypeError, IndexError):
-            self.secret_url = None
-
-        secret_urls = {
-            "283290": 'https://t.me/BorutoSerial',
-            "1042757": 'https://t.me/BorutoSerial',
-            "893924": 'https://t.me/BorutoSerial',
-            "1043713": 'https://www.youtube.com/watch?v=qrwlk7_GF9g'
-        }
-
-        if str(data['filmId']) in secret_urls:
-            self.secret_url = secret_urls[str(data['filmId'])]
+        # в прежней версии выпадала ошибка по ключу data['secret'], необходимо было добавить этот обработчик
+        self.secret_url = None  # Устанавливаем значение по умолчанию
+        if 'secret' in data and 'data' in data['secret'] and len(data['secret']['data']) > 0:
+            try:
+                self.secret_url = 'https:/' + data['secret']['data'][0]['iframe_src']
+            except (TypeError, IndexError, KeyError):
+                self.secret_url = None
 
 
 class SEARCH:
